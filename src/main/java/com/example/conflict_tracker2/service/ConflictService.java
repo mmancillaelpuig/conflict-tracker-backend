@@ -25,14 +25,18 @@ public class ConflictService {
 
     private ConflictRespuestaDTO toDTO(Conflict conflict) {
         ConflictRespuestaDTO dto = new ConflictRespuestaDTO();
+
+        dto.setId(conflict.getId()); // 👈 ESTE ES EL CAMBIO CLAVE
         dto.setName(conflict.getName());
         dto.setStartDate(conflict.getStartDate());
         dto.setConflictStatus(conflict.getConflictStatus());
         dto.setDescription(conflict.getDescription());
+
         dto.setCountryIds(conflict.getCountries()
                 .stream()
                 .map(Country::getId)
                 .collect(Collectors.toSet()));
+
         return dto;
     }
 
@@ -55,8 +59,12 @@ public class ConflictService {
         conflict.setConflictStatus(dto.getConflictStatus());
         conflict.setDescription(dto.getDescription());
 
-        Set<Country> countries = countryRepository.findAllById(dto.getCountryIds())
-                .stream().collect(Collectors.toSet());
+        Set<Long> ids = dto.getCountryIds();
+
+        Set<Country> countries = (ids != null && !ids.isEmpty())
+                ? countryRepository.findAllById(ids).stream().collect(Collectors.toSet())
+                : new java.util.HashSet<>();
+
         conflict.setCountries(countries);
 
         Conflict saved = conflictRepository.save(conflict);
@@ -71,8 +79,12 @@ public class ConflictService {
                     conflict.setConflictStatus(dto.getConflictStatus());
                     conflict.setDescription(dto.getDescription());
 
-                    Set<Country> countries = countryRepository.findAllById(dto.getCountryIds())
-                            .stream().collect(Collectors.toSet());
+                    Set<Long> ids = dto.getCountryIds();
+
+                    Set<Country> countries = (ids != null && !ids.isEmpty())
+                            ? countryRepository.findAllById(ids).stream().collect(Collectors.toSet())
+                            : new java.util.HashSet<>();
+
                     conflict.setCountries(countries);
 
                     return toDTO(conflictRepository.save(conflict));

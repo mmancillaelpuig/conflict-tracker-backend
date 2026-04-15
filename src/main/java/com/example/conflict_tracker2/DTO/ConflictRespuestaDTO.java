@@ -6,6 +6,7 @@ import java.util.Set;
 
 public class ConflictRespuestaDTO {
 
+    private Long id;
     private String name;
     private LocalDate startDate;
     private Conflict.status conflictStatus;
@@ -26,4 +27,12 @@ public class ConflictRespuestaDTO {
 
     public Set<Long> getCountryIds() { return countryIds; }
     public void setCountryIds(Set<Long> countryIds) { this.countryIds = countryIds; }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 }
